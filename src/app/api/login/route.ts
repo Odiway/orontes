@@ -38,6 +38,11 @@ export async function POST(req: Request) {
     }
 
     // Create JWT token matching NextAuth format
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieName = isProduction
+      ? "__Secure-authjs.session-token"
+      : "authjs.session-token";
+
     const token = await encode({
       token: {
         id: user.id,
@@ -47,7 +52,7 @@ export async function POST(req: Request) {
         sub: user.id,
       },
       secret: process.env.AUTH_SECRET!,
-      salt: "authjs.session-token",
+      salt: cookieName,
     });
 
     const response = NextResponse.json({
@@ -56,11 +61,6 @@ export async function POST(req: Request) {
     });
 
     // Set the session cookie
-    const isProduction = process.env.NODE_ENV === "production";
-    const cookieName = isProduction
-      ? "__Secure-authjs.session-token"
-      : "authjs.session-token";
-
     response.cookies.set(cookieName, token, {
       httpOnly: true,
       secure: isProduction,
