@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Gamepad2, LogIn } from "lucide-react";
+import { loginAction } from "./actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -19,22 +18,14 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
+      const result = await loginAction(email, password);
       if (result?.error) {
-        setError("Email veya şifre hatalı");
-      } else {
-        router.refresh();
-        window.location.href = "/dashboard";
+        setError(result.error);
+        setLoading(false);
       }
+      // If no error, signIn will redirect to /dashboard via server-side redirect
     } catch {
-      setError("Bir hata oluştu");
-    } finally {
-      setLoading(false);
+      // NEXT_REDIRECT throws here — that's expected, don't show error
     }
   }
 
