@@ -1,11 +1,11 @@
 {
   "name": "Orontes - Gaming Squad Hub",
   "short_name": "Orontes",
-  "description": "Arkadaş grubunuz için oyun merkezi",
+  "description": "Arkadaş grubunuz için ultimate oyun merkezi",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0f0f23",
-  "theme_color": "#0f0f23",
+  "background_color": "#0a0a1a",
+  "theme_color": "#0a0a1a",
   "orientation": "portrait-primary",
   "icons": [
     {

@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { encode } from "next-auth/jwt";
+import { createToken, COOKIE_NAME } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -37,22 +37,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create JWT token matching NextAuth format
-    const isProduction = process.env.NODE_ENV === "production";
-    const cookieName = isProduction
-      ? "__Secure-authjs.session-token"
-      : "authjs.session-token";
-
-    const token = await encode({
-      token: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        picture: user.avatar,
-        sub: user.id,
-      },
-      secret: process.env.AUTH_SECRET!,
-      salt: cookieName,
+    const token = await createToken({
+      id: user.id,
+      name: user.name,
+      email: user.email,
     });
 
     const response = NextResponse.json({
@@ -60,13 +48,13 @@ export async function POST(req: Request) {
       user: { id: user.id, name: user.name, email: user.email },
     });
 
-    // Set the session cookie
-    response.cookies.set(cookieName, token, {
+    const isProduction = process.env.NODE_ENV === "production";
+    response.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       secure: isProduction,
       sameSite: "lax",
       path: "/",
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: 30 * 24 * 60 * 60,
     });
 
     return response;

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { pollVotes, pollOptions } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -10,15 +10,15 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    const session = await getSession();
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id: pollId } = await params;
     const { optionId } = await req.json();
 
-    const userId = session.user.id!;
+    const userId = session.user.id;
 
     // Check if user already voted on this poll
     const existingVotes = await db

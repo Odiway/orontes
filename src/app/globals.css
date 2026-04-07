@@ -1,18 +1,22 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0f0f23;
+  --color-background: #0a0a1a;
   --color-foreground: #e2e8f0;
   --color-primary: #6366f1;
   --color-primary-hover: #818cf8;
-  --color-surface: #1a1a3e;
-  --color-surface-hover: #252552;
-  --color-border: #2d2d5e;
+  --color-surface: #111128;
+  --color-surface-hover: #1a1a3e;
+  --color-border: #1e1e4a;
   --color-accent: #22d3ee;
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
-  --color-muted: #94a3b8;
+  --color-muted: #64748b;
+  --color-gold: #fbbf24;
+  --color-neon-green: #39ff14;
+  --color-neon-purple: #bf5af2;
+  --color-neon-blue: #00d4ff;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -24,41 +28,111 @@ body {
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted);
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 
-/* Smooth animations */
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-slide-up {
-  animation: slideUp 0.4s ease-out;
+.animate-slide-up { animation: slideUp 0.4s ease-out; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+.animate-slide-down { animation: slideDown 0.4s ease-out; }
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in { animation: scaleIn 0.3s ease-out; }
 
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.15); }
 }
-.animate-pulse-glow {
+.animate-pulse-glow { animation: pulse-glow 2s infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.05) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes glow-border {
+  0%, 100% { border-color: rgba(99, 102, 241, 0.3); }
+  50% { border-color: rgba(99, 102, 241, 0.8); }
+}
+.animate-glow-border { animation: glow-border 2s ease-in-out infinite; }
+
+/* Staggered children animations */
+.stagger-children > * { opacity: 0; animation: fadeIn 0.4s ease-out forwards; }
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* Glass morphism */
+.glass {
+  background: rgba(17, 17, 40, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #22d3ee, #bf5af2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Game card glow on hover */
+.game-card {
+  transition: all 0.3s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
+}
+
+/* Live pulse dot */
+.live-dot {
+  position: relative;
+}
+.live-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: inherit;
   animation: pulse-glow 2s infinite;
 }

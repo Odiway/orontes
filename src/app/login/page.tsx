@@ -2,11 +2,12 @@
 
 import { useState, FormEvent } from "react";
 import Link from "next/link";
-import { Gamepad2, LogIn } from "lucide-react";
+import { Gamepad2, LogIn, Eye, EyeOff, Zap } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,12 +26,11 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Bir hata oluştu");
+        setError(data.error || "Giriş başarısız");
         setLoading(false);
         return;
       }
 
-      // Cookie set by server, do full page navigation
       window.location.href = "/dashboard";
     } catch {
       setError("Bir hata oluştu");
@@ -39,70 +39,107 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/15 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-accent/10 rounded-full blur-[100px]" />
+      </div>
+
       <div className="w-full max-w-md animate-slide-up">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/20 mb-4">
-            <Gamepad2 className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold">Orontes</h1>
-          <p className="text-muted mt-2">Gaming Squad Hub</p>
+          <Link href="/" className="inline-block">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/20 mb-4 animate-pulse-glow">
+              <Gamepad2 className="w-8 h-8 text-primary" />
+            </div>
+          </Link>
+          <h1 className="text-3xl font-black gradient-text">Orontes</h1>
+          <p className="text-muted mt-2 text-sm">Gaming Squad Hub</p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-surface rounded-2xl p-6 border border-border space-y-4"
-        >
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <LogIn className="w-5 h-5" />
+        <div className="glass rounded-3xl p-8 border border-border">
+          <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
+            <LogIn className="w-5 h-5 text-primary" />
             Giriş Yap
           </h2>
 
           {error && (
-            <div className="bg-danger/10 border border-danger/30 text-danger rounded-lg p-3 text-sm">
+            <div className="bg-danger/10 border border-danger/30 text-danger rounded-xl p-3 text-sm mb-4 animate-scale-in">
               {error}
             </div>
           )}
 
-          <div>
-            <label className="block text-sm text-muted mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition"
-              placeholder="email@example.com"
-              required
-            />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm text-muted mb-1.5">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-surface border border-border rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition text-sm"
+                placeholder="gamer@email.com"
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-muted mb-1.5">Şifre</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 pr-12 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition text-sm"
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl py-3 transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Zap className="w-4 h-4" />
+                  Giriş Yap
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-border text-center">
+            <p className="text-sm text-muted">
+              Hesabın yok mu?{" "}
+              <Link
+                href="/register"
+                className="text-primary hover:text-primary-hover font-medium transition"
+              >
+                Kayıt Ol
+              </Link>
+            </p>
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm text-muted mb-1">Şifre</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition"
-              placeholder="••••••"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary hover:bg-primary-hover text-white font-medium rounded-lg py-2.5 transition disabled:opacity-50"
-          >
-            {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
-          </button>
-
-          <p className="text-center text-sm text-muted">
-            Hesabın yok mu?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Kayıt Ol
-            </Link>
-          </p>
-        </form>
+        <div className="flex items-center justify-center gap-3 mt-8 text-2xl opacity-40">
+          🔫 ⚔️ 🎯 ⚽ 🐉 🗡️ ⛏️
+        </div>
       </div>
     </div>
   );

@@ -14,20 +14,25 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Orontes - Gaming Squad Hub",
-  description: "Arkadaş grubunuz için oyun merkezi. Sohbet, oyun planları, oylamalar ve daha fazlası!",
+  description:
+    "Arkadaş grubunuz için ultimate oyun merkezi. Sohbet, oyun planları, oylamalar ve canlı bildirimler!",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Orontes",
   },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f0f23",
+  themeColor: "#0a0a1a",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

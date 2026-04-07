@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
   gameSessions,
@@ -12,8 +12,8 @@ import { broadcastEvent } from "@/lib/sse";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    const session = await getSession();
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -47,8 +47,8 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    const session = await getSession();
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const userId = session.user.id!;
+    const userId = session.user.id;
 
     const [newSession] = await db
       .insert(gameSessions)
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       .map((u) => ({
         userId: u.id,
         title: "🎮 Yeni Oyun Daveti!",
-        body: `${session.user!.name} "${title}" için oyun planladı - ${game}`,
+        body: `${session.user.name} "${title}" için oyun planladı - ${game}`,
         type: "game_invite",
         linkTo: "/sessions",
       }));
