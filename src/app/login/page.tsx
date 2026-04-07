@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Gamepad2, LogIn } from "lucide-react";
-import { loginAction } from "./actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -18,14 +16,25 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await loginAction(email, password);
-      if (result?.error) {
-        setError(result.error);
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Bir hata oluştu");
         setLoading(false);
+        return;
       }
-      // If no error, signIn will redirect to /dashboard via server-side redirect
+
+      // Cookie set by server, do full page navigation
+      window.location.href = "/dashboard";
     } catch {
-      // NEXT_REDIRECT throws here — that's expected, don't show error
+      setError("Bir hata oluştu");
+      setLoading(false);
     }
   }
 

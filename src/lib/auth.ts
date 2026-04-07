@@ -53,6 +53,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session;
     },
+    async authorized({ auth }) {
+      return !!auth;
+    },
   },
   trustHost: true,
   pages: {

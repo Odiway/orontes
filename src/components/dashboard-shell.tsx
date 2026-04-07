@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
 import {
   Gamepad2,
   MessageCircle,
@@ -108,7 +107,10 @@ export function DashboardShell({
               <p className="text-xs text-muted truncate">{user.email}</p>
             </div>
             <button
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={async () => {
+                await fetch("/api/logout", { method: "POST" });
+                window.location.href = "/";
+              }}
               className="text-muted hover:text-danger transition"
               title="Çıkış Yap"
             >
