@@ -28,7 +28,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Email veya şifre hatalı");
       } else {
-        router.push("/dashboard");
+        router.refresh();
+        window.location.href = "/dashboard";
       }
     } catch {
       setError("Bir hata oluştu");
